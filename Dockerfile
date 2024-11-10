@@ -7,8 +7,19 @@ COPY . /var/www/html/
 # Habilita el módulo de reescritura de Apache
 RUN a2enmod rewrite
 
-# Exponer el puerto 80 para acceder al servidor
-EXPOSE 80
+# Cambia el puerto que Apache escucha
+RUN echo "Listen 8080" >> /etc/apache2/ports.conf
 
-# Configura Apache para escuchar en el puerto 80
+# Configura el archivo de configuración de Apache para escuchar en el puerto 8080
+RUN echo "<VirtualHost *:8080>" >> /etc/apache2/sites-available/000-default.conf
+RUN echo "    DocumentRoot /var/www/html" >> /etc/apache2/sites-available/000-default.conf
+RUN echo "</VirtualHost>" >> /etc/apache2/sites-available/000-default.conf
+
+# Agrega la configuración de ServerName para evitar la advertencia
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Expón el puerto 8080
+EXPOSE 8080
+
+# Ejecuta Apache en primer plano
 CMD ["apache2-foreground"]
