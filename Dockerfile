@@ -1,11 +1,14 @@
-# Usa una imagen base de PHP
-FROM php:8.0-cli
+# Usa una imagen base de PHP con Apache
+FROM php:8.1-apache
 
-# Crea un directorio de trabajo
-WORKDIR /app
+# Copia los archivos de la aplicación al contenedor
+COPY . /var/www/html/
 
-# Copia los archivos de la aplicación
-COPY . .
+# Habilita el módulo de reescritura de Apache
+RUN a2enmod rewrite
 
-# Ejecuta el servidor integrado de PHP
-CMD ["php", "-S", "0.0.0.0:8000", "-t", "."]
+# Exponer el puerto 80 para acceder al servidor
+EXPOSE 80
+
+# Configura Apache para escuchar en el puerto 80
+CMD ["apache2-foreground"]
